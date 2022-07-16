@@ -3,17 +3,15 @@ package me.dio.simulator.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
-import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Collections;
-import java.util.FormatFlagsConversionMismatchException;
 import java.util.List;
 import java.util.Random;
 
@@ -69,48 +67,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpFloatingActionButton() {
-        binding.fabSimulate.setOnClickListener(view -> {
-            view.animate().rotationBy(360).setDuration(500).setListener(new AnimatorListenerAdapter(){
-                @Override
-                public void onAnimationEnd(Animator animation){
-                    Random random = new Random();
-                    for (int i = 0; i < matchesAdapter.getItemCount(); i++) {
-                        Match match = matchesAdapter.getMatches().get(0);
-                        match.getHometeam().setScore(random.nextInt(match.getHometeam().getStars() + 1));
-                        match.getAwayteam().setScore(random.nextInt(match.getAwayteam().getStars() + 1));
-                        matchesAdapter.notifyItemChanged(0);
+        binding.fabSimulate.setOnClickListener(view -> view.animate().rotationBy(360).setDuration(500).setListener(new AnimatorListenerAdapter(){
+            @Override
+            public void onAnimationEnd(Animator animation){
+                Random random = new Random();
+                for (int i = 0; i < matchesAdapter.getItemCount(); i++) {
+                    Match match = matchesAdapter.getMatches().get(0);
+                    match.getHometeam().setScore(random.nextInt(match.getHometeam().getStars() + 1));
+                    match.getAwayteam().setScore(random.nextInt(match.getAwayteam().getStars() + 1));
+                    matchesAdapter.notifyItemChanged(0);
 
-                    }
-        };
-                {
-                    Random random = new Random();
-                    for (int i = 0; i < matchesAdapter.getItemCount(); i++) {
-                        Match match = matchesAdapter.getMatches().get(1);
-                        match.getHometeam().setScore(random.nextInt(match.getHometeam().getStars() + 1));
-                        match.getAwayteam().setScore(random.nextInt(match.getAwayteam().getStars() + 1));
-                        matchesAdapter.notifyItemChanged(1);
-
-                    }
-                };
-                {
-                    Random random = new Random();
-                    for (int i = 0; i < matchesAdapter.getItemCount(); i++) {
-                        Match match = matchesAdapter.getMatches().get(2);
-                        match.getHometeam().setScore(random.nextInt(match.getHometeam().getStars() + 1));
-                        match.getAwayteam().setScore(random.nextInt(match.getAwayteam().getStars() + 1));
-                        matchesAdapter.notifyItemChanged(2);
-
-                    }
                 }
-            });
-        });
+    }
+            {
+                Random random = new Random();
+                for (int i = 0; i < matchesAdapter.getItemCount(); i++) {
+                    Match match = matchesAdapter.getMatches().get(1);
+                    match.getHometeam().setScore(random.nextInt(match.getHometeam().getStars() + 1));
+                    match.getAwayteam().setScore(random.nextInt(match.getAwayteam().getStars() + 1));
+                    matchesAdapter.notifyItemChanged(1);
+
+                }
+            }
+            {
+                Random random = new Random();
+                for (int i = 0; i < matchesAdapter.getItemCount(); i++) {
+                    Match match = matchesAdapter.getMatches().get(2);
+                    match.getHometeam().setScore(random.nextInt(match.getHometeam().getStars() + 1));
+                    match.getAwayteam().setScore(random.nextInt(match.getAwayteam().getStars() + 1));
+                    matchesAdapter.notifyItemChanged(2);
+                }
+            }
+        }));
+
     }
 
     private void findMatchesFromApi() {
         binding.srlMatches.setRefreshing(true);
         matchesApi.getMatches().enqueue(new Callback<List<Match>>() {
             @Override
-            public void onResponse(Call<List<Match>> call, Response<List<Match>> response) {
+            public void onResponse(@NonNull Call<List<Match>> call, @NonNull Response<List<Match>> response) {
                 if (response.isSuccessful()) {
                     List<Match> matches = response.body();
                     matchesAdapter = new Matchesadapter(matches);
@@ -122,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Match>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Match>> call, @NonNull Throwable t) {
                 showErrorMesage();
                 binding.srlMatches.setRefreshing(false);
             }
